@@ -7,10 +7,11 @@ app = Flask(__name__)
 
 @app.route("/")
 def main():
+
 	API_KEY = "ca41b2d25861cebdfabb45477c97bcab"
 	customer = "57e693dbdbd83557146123d8"
 	account = "57e69755dbd83557146123dd"
-	
+     	
 	url = "http://api.reimaginebanking.com/accounts/{}/purchases?key={}".format(account, API_KEY)
 	response = requests.get(url, headers={'content-type':'application/json'})
 	x = response.json()
@@ -46,46 +47,27 @@ def main():
 	sorted_amts = []
 	for x in date_data:
 		sorted_amts.append({'date': x, 'amounts': date_data[x]})
-	print sorted_amts
+	#print sorted_amts
 	sorted_amts.sort(key=lambda item:item['date'], reverse=False)
 
-
-	# MORE DAMN DATA
-	# CUSTOMER INFO
-	cust_url = "http://api.reimaginebanking.com/customers/{}?key={}".format(customer, API_KEY)
-	cust_query = requests.get(cust_url, headers={'content-type':'application/json'})
-	cust_info = cust_query.json()
-	cust_firstname = cust_info['first_name']
-
-	# ACCOUNT INFO
-	acc_url = "http://api.reimaginebanking.com/accounts/{}?key={}".format(account, API_KEY)
-	acc_query = requests.get(acc_url, headers={'content-type':'application/json'})
-	acc_info = acc_query.json()
-
-	acc_owner = cust_info['first_name'] + ' ' + cust_info['last_name']
-	acc_type = acc_info['type']
-	acc_balance = acc_info['balance']
-	if acc_balance < 0:
-		acc_balance = '<span class="new badge red">' + '{:05.2f}'.format(acc_balance) + '</span>'
-	else:
-		acc_balance = '<span class="new badge">' + '{:05.2f}'.format(acc_balance) + '</span>'
-	acc_balance = Markup(acc_balance)
-	acc_rewards = Markup('<span class="new badge blue">' + '{0:.2f}'.format(acc_info['rewards']) + '</span>')
+	# weekly budgeting data
 
 	x_budget = response.json()
 	x_budget.sort(key=lambda item:item['purchase_date'])
 
 	firstDate = datetime.date(*(int(s) for s in x_budget[0]['purchase_date'].split("-")))
 	lastDate = datetime.date(*(int(s) for s in x_budget[len(x_budget) - 1]['purchase_date'].split("-")))
-
+	print firstDate
+	print lastDate
 	timeSpan = (lastDate - firstDate).days
-
-	weeklySpending = [0] * (math.floor(timeSpan/7) + 1)
+	print timeSpan
+	weeklySpending = [0] * int(math.floor(timeSpan/7))
 
 	for purchase in x_budget:
 	    purchaseDate = datetime.date(*(int(s) for s in purchase['purchase_date'].split("-")))
-	    week = math.floor(((purchaseDate - firstDate).days)/7)
-	    weeklySpending[week] = weeklySpending[week] + purchase['amount']
+	    week = int(math.floor(((purchaseDate - firstDate).days)/7))
+	    if (week != len(weeklySpending)):
+	        weeklySpending[week] = weeklySpending[week] + purchase['amount']
 
 	weeklySpendingAvg = statistics.mean(weeklySpending)
 
@@ -135,6 +117,7 @@ def main():
 	        acc_balance=acc_balance,
 	        acc_rewards=acc_rewards
 	        ) 
+
 
 @app.route("/showSignup")
 def showSignup():

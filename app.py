@@ -1,35 +1,72 @@
 from flask import Flask, render_template, request, redirect, url_for
 import requests
 import json
+import datetime, calendar, math, statistics
 
 app = Flask(__name__)
 
 @app.route("/")
 def main():
-	API_KEY = "api key goes here"
-	customer = "customer id goes here"
-	account = "acc id goes here"
+        API_KEY = "ca41b2d25861cebdfabb45477c97bcab"
+        customer = "57e693dbdbd83557146123d8"
+        account = "57e69755dbd83557146123dd"
 
-	url = "http://api.reimaginebanking.com/accounts/{}/purchases?key={}".format(account, API_KEY)
-	response = requests.get(url, headers={'content-type':'application/json'})
-	x = response.json()
-	x.sort(key=lambda item:item['purchase_date'], reverse=True)
-	to_show = x[:50]
-	date_data = {}
-	for y in to_show:
-		if y[u'purchase_date'] in date_data:
-			date_data[y[u'purchase_date']] += y[u'amount']
-		else:
-			date_data[y[u'purchase_date']] = y[u'amount']
-	sorted_amts = []
-	for x in date_data:
-		sorted_amts.append({'date': x, 'amount': date_data[x]})
-	sorted_amts.sort(key=lambda item:item['date'], reverse=False)
-	return render_template('index.html', data = json.dumps(sorted_amts))
+        url = "http://api.reimaginebanking.com/accounts/{}/purchases?key={}".format(account, API_KEY)
+        response = requests.get(url, headers={'content-type':'application/json'})
+        x = response.json()
+        x.sort(key=lambda item:item['purchase_date'], reverse=True)
+        to_show = x[:50]
+        date_data = {}
+        for y in to_show:
+                if y[u'purchase_date'] in date_data:
+                        date_data[y[u'purchase_date']] += y[u'amount']
+                else:
+                        date_data[y[u'purchase_date']] = y[u'amount']
+        sorted_amts = []
+        for x in date_data:
+                sorted_amts.append({'date': x, 'amount': date_data[x]})
+        sorted_amts.sort(key=lambda item:item['date'], reverse=False)
+
+        # weekly budgeting data
+        
+        
+
+        x_budget = response.json()
+        x_budget.sort(key=lambda item:item['purchase_date'])
+
+        firstDate = datetime.date(*(int(s) for s in x_budget[0]['purchase_date'].split("-")))
+        lastDate = datetime.date(*(int(s) for s in x_budget[len(x_budget) - 1]['purchase_date'].split("-")))
+
+        timeSpan = (lastDate - firstDate).days
+
+        weeklySpending = [0] * (math.floor(timeSpan/7) + 1)
+
+        for purchase in x_budget:
+            purchaseDate = datetime.date(*(int(s) for s in purchase['purchase_date'].split("-")))
+            week = math.floor(((purchaseDate - firstDate).days)/7)
+            weeklySpending[week] = weeklySpending[week] + purchase['amount']
+
+        weeklySpendingAvg = statistics.mean(weeklySpending)
+
+        currentWeekSpending = 0;
+        i = 1
+        currentDate = datetime.date(*(int(s) for s in x_budget[len(x_budget) - i]['purchase_date'].split("-")))
+        weekday = datetime.timedelta(days = currentDate.weekday())
+        beginWeek = currentDate - weekday
+
+        while(currentDate > beginWeek):
+            currentWeekSpending += x_budget[len(x_budget) - i]['amount']
+            i += 1
+            currentDate = datetime.date(*(int(s) for s in x_budget[len(x_budget) - i]['purchase_date'].split("-")))
+
+        weeklySpendingRatio = currentWeekSpending/weeklySpendingAvg
+
+
+        return render_template('index.html', transactionData = json.dumps(sorted_amts), weeklyBudgetData = json.dumps([currentWeekSpending, weeklySpendingAvg-currentWeekSpending]))     
 
 @app.route("/showSignup")
 def showSignup():
-	return render_template('signup.html')
+        return render_template('signup.html')
 
 @app.route("/showSignin")
 def showSignin():
@@ -37,4 +74,4 @@ def showSignin():
 
 
 if __name__ == "__main__":
-	app.run(debug=True)
+        app.run(debug=True)

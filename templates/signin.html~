@@ -43,7 +43,7 @@
   
 </head>
 
-<body class="cyan">
+<body class="yellow accent-3">
   <!-- Start Page Loading -->
   <div id="loader-wrapper">
       <div id="loader"></div>        
@@ -65,14 +65,14 @@
         </div>
         <div class="row margin">
           <div class="input-field col s12">
-            <i class="material-icons prefix">"perm_identity"</i>
+            <i class="material-icons prefix">perm_identity</i>
             <input id="username" type="text">
             <label for="username" >Username</label>
           </div>
         </div>
         <div class="row margin">
           <div class="input-field col s12">
-            <i class="material-icons prefix">"lock_outline"</i>
+            <i class="material-icons prefix">lock_outline</i>
             <input id="password" type="password">
             <label for="password">Password</label>
           </div>

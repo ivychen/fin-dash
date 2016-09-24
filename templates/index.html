@@ -91,13 +91,26 @@
                 <div class="col s12 m12 l3">
                   <div class="card blue-grey darken-1 fade_card">
                     <div class="card-content white-text">
-                      <span class="card-title">text</span>
-                      <p>I am a very simple card. I am good at containing small bits of information.
-                      I am convenient because I require little markup to use effectively.</p>
-                    </div>
-                    <div class="card-action">
-                      <a href="#">This is a link</a>
-                      <a href="#">This is a link</a>
+                      <span class="card-title">Top Merchants</span>
+                        <p>September 2016</p>
+                        <table class="centered">
+                        <thead>
+                          <tr>
+                              <th data-field="id" width="40%">Merchant</th>
+                              <th data-field="name">Total Spent</th>
+                              <th data-field="price"># Purchases</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for merchant in merchants %}
+                            <tr>
+                                <td>{{merchant.name}}</td>
+                                <td style="color:#81c784">{{"${:.2f}".format(merchant.total)}}</td>
+                                <td>{{merchant.count}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
                     </div>
                   </div>
 

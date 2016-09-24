@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
  
-<head>
-    <title>Python Flask Bucket List App</title>
- 
- 
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
- 
-    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
- 
- 
-</head>
+{% include 'partials/_head.html' %}
  
 <body>
  
@@ -22,7 +13,7 @@
                     </li>
                     <li role="presentation"><a href="#">Sign In</a>
                     </li>
-                    <li role="presentation"><a href="showSignup">Sign Up</a>
+                    <li role="presentation"><a href="showSignUp">Sign Up</a>
                     </li>
                 </ul>
             </nav>
@@ -32,7 +23,7 @@
         <div class="jumbotron">
             <h1>Bucket List App</h1>
             <p class="lead"></p>
-            <p><a class="btn btn-lg btn-success" href="showSignup" role="button">Sign up today</a>
+            <p><a class="btn btn-lg btn-success" href="showSignUp" role="button">Sign up today</a>
             </p>
         </div>
  

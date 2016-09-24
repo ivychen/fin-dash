@@ -2,6 +2,7 @@ import requests
 import json
 import datetime, calendar, math, statistics
 from flask import Flask, render_template, request, redirect, url_for, Markup
+from itertools import groupby
 
 app = Flask(__name__)
 
@@ -140,6 +141,118 @@ def getMerchantInfo():
 		merchant_info[merchant_id] = {"name": name, "categories": merchant_categories}
 
 	return merchant_info
+
+@app.route("/sort/<amt>")
+def sortGraph(amt):
+	API_KEY = "ca41b2d25861cebdfabb45477c97bcab"
+	customer = "57e693dbdbd83557146123d8"
+	account = "57e69755dbd83557146123dd"
+     	
+	url = "http://api.reimaginebanking.com/accounts/{}/purchases?key={}".format(account, API_KEY)
+	response = requests.get(url, headers={'content-type':'application/json'})
+	x = response.json()
+	x.sort(key=lambda item:item['purchase_date'], reverse=True)
+	merch_info = getMerchantInfo()
+	to_show = x[:75]
+
+	if amt == 'day': 
+
+		date_data = {}
+		for y in to_show:
+			if y[u'purchase_date'] in date_data:
+				add_to = date_data[y[u'purchase_date']]
+				add_to["total"] += y[u'amount']
+			else:
+				date_data[y[u'purchase_date']] = {"total" : y[u'amount'], "food": 0, "groceries": 0, "entertainment": 0, "gas": 0, "coffee": 0, "music": 0, "shopping": 0}
+
+			merch = str(y[u'merchant_id'])
+			cat = merch_info[merch]["categories"]
+
+			for c in cat:
+				if c == 'enterta':
+					c = "entertainment"
+				add_to = date_data[y[u'purchase_date']]
+				add_to[c] += y[u'amount']
+
+		d = datetime.datetime.strptime(to_show[-1][u'purchase_date'], "%Y-%m-%d")
+		delta = datetime.timedelta(days=1)
+		while d <= datetime.datetime.strptime(to_show[0][u'purchase_date'], "%Y-%m-%d"):
+		    str_date = d.strftime("%Y-%m-%d")
+		    if str_date not in date_data:
+		    	date_data[str_date] = {"total" : 0, "food": 0, "groceries": 0, "entertainment": 0, "gas": 0, "coffee": 0, "music": 0, "shopping": 0}
+		    d += delta
+
+		sorted_amts = []
+		for x in date_data:
+			sorted_amts.append({'date': x, 'amounts': date_data[x]})
+		#print sorted_amts
+		sorted_amts.sort(key=lambda item:item['date'], reverse=False)
+
+		return json.dumps(sorted_amts)
+	elif amt == 'week':
+		week_data = {}
+
+		d = datetime.datetime.strptime(to_show[0][u'purchase_date'], "%Y-%m-%d")
+		delta = datetime.timedelta(days=7)
+		for y in to_show:
+			date = y[u'purchase_date']
+			if datetime.datetime.strptime(date, "%Y-%m-%d") >= (d-delta):
+				week_date = d.strftime("%Y-%m-%d")
+			else:
+				d -= delta
+				week_date = d.strftime("%Y-%m-%d")
+
+			if week_date in week_data:
+				add_to = week_data[week_date]
+				add_to["total"] += y[u'amount']
+			else:
+				week_data[week_date] = {"total" : y[u'amount'], "food": 0, "groceries": 0, "entertainment": 0, "gas": 0, "coffee": 0, "music": 0, "shopping": 0}
+
+			merch = str(y[u'merchant_id'])
+			cat = merch_info[merch]["categories"]
+
+			for c in cat:
+				if c == 'enterta':
+					c = "entertainment"
+				add_to = week_data[week_date]
+				add_to[c] += y[u'amount']
+
+		sorted_amts = []
+		for x in week_data:
+			sorted_amts.append({'date': x, 'amounts': week_data[x]})
+		#print sorted_amts
+		sorted_amts.sort(key=lambda item:item['date'], reverse=False)
+
+		return json.dumps(sorted_amts)
+
+	else:
+		month_data = {}
+		for y in to_show:
+			month = y[u'purchase_date'].split('-')[1]
+			if month in month_data:
+				add_to = month_data[month]
+				add_to["total"] += y[u'amount']
+			else:
+				month_data[month] = {"total" : y[u'amount'], "food": 0, "groceries": 0, "entertainment": 0, "gas": 0, "coffee": 0, "music": 0, "shopping": 0}
+
+			merch = str(y[u'merchant_id'])
+			cat = merch_info[merch]["categories"]
+
+			for c in cat:
+				if c == 'enterta':
+					c = "entertainment"
+				add_to = month_data[month]
+				add_to[c] += y[u'amount']
+
+				sorted_amts = []
+
+		sorted_amts = []
+		for x in month_data:
+			sorted_amts.append({'date': x, 'amounts': month_data[x]})
+		#print sorted_amts
+		sorted_amts.sort(key=lambda item:item['date'], reverse=False)
+		return json.dumps(sorted_amts)
+
 
 if __name__ == "__main__":
        		app.run(debug=True)

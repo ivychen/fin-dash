@@ -1,0 +1,37 @@
+/* CUSTOM CSS */
+
+/* Navbar */
+.navbar-fixed > nav {
+	left: 0;
+}
+
+.navbar-fixed > nav > .nav-wrapper {
+	margin: 0 auto;
+}
+
+@media (min-width: 601px) {
+	.navbar-fixed > nav > .nav-wrapper,
+	.footer .colophon {
+		width: 85%;
+	}
+}
+
+@media (min-width: 993px) {
+	.navbar-fixed > nav > .nav-wrapper,
+	.footer .colophon {
+		width: 70%;
+	}
+}
+
+/* Footer */
+.footer {
+	background: #454343;
+	color: white;
+	left: 0;
+	position: absolute;
+	width: 100%;
+}
+
+.footer .colophon {
+	margin: 0 auto;
+}

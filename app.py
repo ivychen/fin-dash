@@ -42,8 +42,8 @@ def main():
         for purchase in x_budget:
             purchaseDate = datetime.date(*(int(s) for s in purchase['purchase_date'].split("-")))
             week = math.floor(((purchaseDate - firstDate).days)/7)
-            if (week != len(weeklySpending))
-            weeklySpending[week] = weeklySpending[week] + purchase['amount']
+            if (week != len(weeklySpending)):
+                weeklySpending[week] = weeklySpending[week] + purchase['amount']
 
         weeklySpendingAvg = statistics.mean(weeklySpending)
 

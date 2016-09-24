@@ -4,56 +4,51 @@
 {% include 'partials/_head.html' %}
  
 <body>
- 
     <div class="container">
         <div class="header">
-            <nav>
-                <ul class="nav nav-pills pull-right">
-                    <li role="presentation" class="active"><a href="#">Home</a>
-                    </li>
-                    <li role="presentation"><a href="#">Sign In</a>
-                    </li>
-                    <li role="presentation"><a href="showSignUp">Sign Up</a>
-                    </li>
-                </ul>
-            </nav>
-            <h3 class="text-muted">Python Flask App</h3>
+            {% include 'partials/_navbar.html' %}
         </div>
  
         <div class="jumbotron">
-            <h1>Bucket List App</h1>
+            <h3>fin.dash</h3>
             <p class="lead"></p>
-            <p><a class="btn btn-lg btn-success" href="showSignUp" role="button">Sign up today</a>
-            </p>
+<!--             <p><a class="btn btn-lg btn-success" href="showSignUp" role="button">Sign up today</a>
+            </p> -->
+        </div>
+    
+        <div id="fin-dashboard">
+            <div class="row">
+                <div class="col s12 m7 l8">
+                  <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                      <span class="card-title">Card Title</span>
+                      <p>I am a very simple card. I am good at containing small bits of information.
+                      I am convenient because I require little markup to use effectively.</p>
+                    </div>
+                    <div class="card-action">
+                      <a href="#">This is a link</a>
+                      <a href="#">This is a link</a>
+                    </div>
+                  </div>
+                </div>
+     
+                <div class="col s12 m5 l4">
+                  <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                      <span class="card-title">Card Title</span>
+                      <p>I am a very simple card. I am good at containing small bits of information.
+                      I am convenient because I require little markup to use effectively.</p>
+                    </div>
+                    <div class="card-action">
+                      <a href="#">This is a link</a>
+                      <a href="#">This is a link</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
         </div>
  
-        <div class="row marketing">
-            <div class="col-lg-6">
-                <h4>Bucket List</h4>
-                <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
- 
-                <h4>Bucket List</h4>
-                <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
- 
-                <h4>Bucket List</h4>
-                <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-            </div>
- 
-            <div class="col-lg-6">
-                <h4>Bucket List</h4>
-                <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
- 
-                <h4>Bucket List</h4>
-                <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
- 
-                <h4>Bucket List</h4>
-                <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
-            </div>
-        </div>
- 
-        <footer class="footer">
-            <p>&copy; Company 2015</p>
-        </footer>
+        {% include 'partials/_footer.html' %}
  
     </div>
 </body>

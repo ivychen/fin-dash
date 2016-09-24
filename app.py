@@ -7,7 +7,6 @@ app = Flask(__name__)
 
 @app.route("/")
 def main():
-
 	API_KEY = "ca41b2d25861cebdfabb45477c97bcab"
 	customer = "57e693dbdbd83557146123d8"
 	account = "57e69755dbd83557146123dd"
@@ -57,7 +56,14 @@ def main():
 
 	firstDate = datetime.date(*(int(s) for s in x_budget[0]['purchase_date'].split("-")))
 	lastDate = datetime.date(*(int(s) for s in x_budget[len(x_budget) - 1]['purchase_date'].split("-")))
+<<<<<<< HEAD
 	timeSpan = (lastDate - firstDate).days
+=======
+	print(firstDate)
+	print(lastDate)
+	timeSpan = (lastDate - firstDate).days
+	print(timeSpan)
+>>>>>>> e9e9410d9e3e28978c5fcfee026c925dae88cc59
 	weeklySpending = [0] * int(math.floor(timeSpan/7))
 
 	for purchase in x_budget:
@@ -115,15 +121,13 @@ def main():
 	        acc_rewards=acc_rewards
 	        ) 
 
-
 @app.route("/showSignup")
 def showSignup():
-        return render_template('signup.html')
+        	return render_template('signup.html')
 
 @app.route("/showSignin")
 def showSignin():
-        return render_template('signin.html')
-
+        	return render_template('signin.html')
 
 def getMerchantInfo():
 	merchants = ['57e69aaedbd83557146123df', '57e6a242dbd83557146123f9', '57e6a242dbd83557146123fa', '57e6a242dbd83557146123fb', '57e6a243dbd83557146123fc', '57e6a243dbd83557146123fd', '57e6a243dbd83557146123fe', '57e6a243dbd83557146123ff', '57e6a243dbd8355714612400', '57e6a243dbd8355714612401', '57e6a243dbd8355714612402', '57e6a243dbd8355714612403', '57e6a243dbd8355714612404']
@@ -142,4 +146,4 @@ def getMerchantInfo():
 	return merchant_info
 
 if __name__ == "__main__":
-        app.run(debug=True)
+       		app.run(debug=True)

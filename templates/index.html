@@ -59,7 +59,7 @@
                         <div class="card blue-grey darken-1">
                             <div class="card-content white-text">
                               <span class="card-title">Budgeting</span>
-                              <canvas id="weeklyBudgetCanvas" width="400" height="400" style="background-color: white;"></canvas>
+                              <canvas id="weeklyBudgetCanvas" width="200" height="200" style="background-color: white;"></canvas>
                             </div>
                         </div>
                     </div>
@@ -103,16 +103,38 @@
     var data = {{transactionData | safe}};
     //console.log(data);
     labels = [];
-    graphdata = [];
+    graphdata = {"total" : [], "food": [], "groceries": [], "entertainment": [], "gas": [], "coffee": [], "music": [], "shopping": []};
     for (var i=0; i < data.length; i ++) {
         labels.push(data[i].date);
-        graphdata.push(Math.round(data[i].amount * 100) / 100);
+        amounts = data[i]["amounts"]
+        for (prop in amounts) {
+            graphdata[prop].push(Math.round(amounts[prop] * 100) / 100);
+        }
     }
 
     //console.log(labels);
-    //console.log(graphdata);
+    console.log(graphdata);
 
-    var data = {labels: labels, datasets:[{data: graphdata, label: "Money spent"}]};
+    var data = {
+            labels: labels, 
+            datasets:[
+                    {
+                        data: graphdata["total"], 
+                        label: 'total', 
+                        fillColor: '#d32f2f',
+                        strokeColor: '#d32f2f',
+                        highlightColor: '#d32f2f',
+                        highlightFill: '#d32f2f'},
+                    {data: graphdata["groceries"], label: 'groceries', color: '#303f9f'},
+                    {data: graphdata["food"], label: 'food'},
+                    {data: graphdata["entertainment"], label: 'entertainment'},
+                    {data: graphdata["gas"], label: 'gas'},
+                    {data: graphdata["coffee"], label: 'coffee'},
+                    {data: graphdata["music"], label: 'music'},
+                    {data: graphdata["shopping"], label: 'shopping'},
+                
+            ],
+        };
 
 
     var ctx = document.getElementById("myChart");
@@ -131,7 +153,8 @@
                                 display:false
                             }   
                         }]
-                }
+                },
+        showXLabels:10, 
         }
 	   });
 

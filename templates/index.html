@@ -67,16 +67,38 @@
     var data = {{data | safe}};
     //console.log(data);
     labels = [];
-    graphdata = [];
+    graphdata = {"total" : [], "food": [], "groceries": [], "entertainment": [], "gas": [], "coffee": [], "music": [], "shopping": []};
     for (var i=0; i < data.length; i ++) {
         labels.push(data[i].date);
-        graphdata.push(Math.round(data[i].amount * 100) / 100);
+        amounts = data[i]["amounts"]
+        for (prop in amounts) {
+            graphdata[prop].push(Math.round(amounts[prop] * 100) / 100);
+        }
     }
 
     //console.log(labels);
-    //console.log(graphdata);
+    console.log(graphdata);
 
-    var data = {labels: labels, datasets:[{data: graphdata, label: "Money spent"}]};
+    var data = {
+            labels: labels, 
+            datasets:[
+                    {
+                        data: graphdata["total"], 
+                        label: 'total', 
+                        fillColor: '#d32f2f',
+                        strokeColor: '#d32f2f',
+                        highlightColor: '#d32f2f',
+                        highlightFill: '#d32f2f'},
+                    {data: graphdata["groceries"], label: 'groceries', color: '#303f9f'},
+                    {data: graphdata["food"], label: 'food'},
+                    {data: graphdata["entertainment"], label: 'entertainment'},
+                    {data: graphdata["gas"], label: 'gas'},
+                    {data: graphdata["coffee"], label: 'coffee'},
+                    {data: graphdata["music"], label: 'music'},
+                    {data: graphdata["shopping"], label: 'shopping'},
+                
+            ],
+        };
 
 
     var ctx = document.getElementById("myChart");
@@ -95,7 +117,8 @@
                                 display:false
                             }   
                         }]
-                }
+                },
+        showXLabels:10, 
         }
     });
 

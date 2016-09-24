@@ -58,6 +58,10 @@ span.badge.new:after {
 
 .footer .colophon {
 	margin: 0 auto;
+}
+
+#loginButton {
+    background-color: #455a64;
 	text-align: center;
 }
 

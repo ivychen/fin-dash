@@ -1,0 +1,9 @@
+import requests
+
+API_KEY = "ca41b2d25861cebdfabb45477c97bcab"
+customer = "57e693dbdbd83557146123d8"
+account = "57e69755dbd83557146123dd"
+
+url = "http://api.reimaginebanking.com/accounts/{}/purchases?key={}".format(account, API_KEY)
+response = requests.get(url, headers={'content-type':'application/json'})
+x = response.json()

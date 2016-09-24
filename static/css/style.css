@@ -123,3 +123,9 @@ span.badge.new:after {
     from { opacity: 0; }
     to   { opacity: 1; }
 }
+
+#graph-loader {
+	position: absolute;
+	margin-left: -15rem;
+	margin-top: 15rem;
+}

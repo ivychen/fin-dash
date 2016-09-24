@@ -7,10 +7,6 @@ app = Flask(__name__)
 @app.route("/")
 def main():
 	# CAPITAL ONE API
-	API_KEY = "api key goes here"
-	customer = "customer id goes here"
-	account = "acc id goes here"
-
 	url = "http://api.reimaginebanking.com/accounts/{}/purchases?key={}".format(account, API_KEY)
 	response = requests.get(url, headers={'content-type':'application/json'})
 	x = response.json()
@@ -50,6 +46,9 @@ def main():
 	acc_rewards = Markup('<span class="new badge blue">' + '{0:.2f}'.format(acc_info['rewards']) + '</span>')
 
 	return render_template('index.html', data = json.dumps(sorted_amts), cust_firstname=cust_firstname, acc_owner=acc_owner, acc_type=acc_type, acc_balance=acc_balance, acc_rewards=acc_rewards)
+
+def getNearestBranch(zip):
+
 
 @app.route("/showSignup")
 def showSignup():

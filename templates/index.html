@@ -125,17 +125,39 @@
                     </div>
                   </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col s12 m12 l12">
+            <div class="row">
+            <div class="col s8 m12 l12">
                 <div class="card blue-grey darken-1 fade_card" style="color: #455a64 !important">
                     <div class="card-content white-text">
-                      <span class="card-title">Project Possible Savings</span>
-                      <canvas id="forecast-graph"></canvas>
+                      <span class="card-title">Project Future Spending</span>
+                      <p>Based on your recent spending patterns, you will spend {{"${:.2f}".format(month_average * 12)}} in a year.</p>
+                      <div class="row">
+                            <div class="col s4">
+                                <form id="forecast-form">
+                                    {% for item in all_averages %}
+                                    {% if item.name != 'total' %}
+                                        <div class="row">
+                                        <div class="input-field col s12">
+                                          <input id="{{item.name}}" type="text" value="{{'{:.2f}'.format(item.average)}}">
+                                          <label style="color:white;" for="{{item.name}}">Monthy spending on {{item.name}}</label>
+                                        </div>
+                                      </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </form>
+                                <p>Monthly Total: <span id ="month-total" style="color:#81c784">${{'{:.2f}'.format(month_average)}}</span></p>
+                                <p>Year Total: <span id ="year-total" style="color:#81c784">${{'{:.2f}'.format(month_average * 12)}}</span></p>
+                            </div>
+                            <div class="col s8 ">
+                                <canvas id="forecast-graph" height="250" width="300" style="background-color: white;"></canvas>
+                            </div>
+                      </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div>
+
  
         {% include 'partials/_footer.html' %}
  
@@ -198,6 +220,32 @@
 
       $(document).ready(function() {
         $('select').material_select();
+
+        $("#forecast-form :input").change(function() {
+            var month_average = {{month_average}};
+          //console.log($(this).attr('id'));
+          var all = 0;
+          $("#forecast-form :input").each(function() {
+            var val = $(this).val();
+            if (val == '') {
+                val = 0;
+            }
+            all += parseInt(val);
+          });
+          console.log(all);
+          updateForecastGraph(all);
+          month_diff = all - month_average; 
+          if (month_diff > 0){
+                prefix = ''
+            } else {
+                prefix = '+'
+            }
+
+        diff = ' (' + prefix + '$' + Math.abs(Math.round(month_diff*100)/100) + ' in savings)'
+        year_diff = ' (' + prefix + '$' + Math.abs(Math.round(month_diff*12*100)/100) + ' in savings)'
+          $('#month-total').text('$' + Math.round(all*100)/100 + diff);
+          $('#year-total').text('$' + Math.round(all * 12 * 100)/100 + year_diff);
+        });
 
         markers = addMapMarkers(1420070400, 1474763510);
         $('#example_id').change(function() {
@@ -366,7 +414,69 @@
     var weeklyBudgetctx = weeklyBudgetCanvas.getContext("2d");
     console.log(weeklyBudgetctx);
     weeklyBudgetctx.font="36px Roboto";
-    weeklyBudgetctx.fillText("500", 300, 200);		      
+    weeklyBudgetctx.fillText("500", 300, 200);		
+
+    var forecastctx = document.getElementById("forecast-graph");
+    var month_average = {{month_average}};
+    var month_abbrev = {1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'June', 7: 'July', 8: 'Aug', 9: 'Sept', 10 : 'Oct', 11: 'Nov', 0 : 'Dec'};
+    var labels = []
+
+    var total = 0;
+    var month_graph = []
+    for(var i = 9; i < 9+12; i ++) {
+        labels.push(month_abbrev[i % 12]);
+        month_graph.push(Math.round(total*100)/100);
+        total += month_average;
+    }
+
+    console.log(labels);
+    console.log(month_graph);
+
+    var forecast = new Chart(forecastctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: month_graph,
+                label: "Based on recent spending",
+                backgroundColor: 'rgba(39, 174, 96, 0.3)',
+                borderColor: 'rgba(39, 174, 96, .6)'
+            }]
+        },
+        options: {
+            fill:false,
+            scales: {
+                xAxes: [{
+                            gridLines: {
+                                display:false
+                            }
+                        }],
+                yAxes: [{
+                            gridLines: {
+                                display:false
+                            },
+                        }]
+                },
+        showXLabels:10, 
+        }
+       });
+
+    function updateForecastGraph(amt) {
+        var total = 0;
+        var month_graph = []
+        for(var i = 9; i < 9+12; i ++) {
+            month_graph.push(Math.round(total*100)/100);
+            total += amt;
+        }
+        var num = forecast.data.datasets.length;
+        if (num == 1) {
+            forecast.data.datasets.push({data: month_graph, label: 'Based on current budget', backgroundColor: 'rgba(52, 73, 94, 0.3)', borderColor: 'rgba(52, 73, 94, .6)'});
+        } else {
+            forecast.data.datasets[1].data = month_graph;
+        }
+        forecast.update(); 
+
+    }
 
 </script>
  

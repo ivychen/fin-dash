@@ -158,3 +158,12 @@ input[type=text]:focus:not([readonly])+label {
 #mapid {
 	height: 400px;
 }
+
+#forecast-form {
+	padding-top: 2.5rem;
+}
+
+#forecast-graph {
+	margin-top: 2.5rem;
+	padding: 10px;
+}

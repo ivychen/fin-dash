@@ -138,7 +138,6 @@ def main():
     acc_rewards = Markup('<span class="new badge blue">' + '$ {0:.2f}'.format(acc_info['rewards']) + '</span>')
 
     avgs = month_averages()
-    print(avgs)
 
     return render_template(
             'index.html',
@@ -152,6 +151,9 @@ def main():
             merchants = month_merchant_counts,
             all_merchants = json.dumps(weeklySpendingByMerchant),
             weeklyBudgetLimit = weeklySpendingAvg,
+            all_averages = avgs,
+            month_average = [x for x in avgs if x['name'] == 'total'][0]['average'],
+            curr_balance = acc_info['balance']
             ) 
 
 @app.route("/showSignup")
@@ -290,13 +292,14 @@ def sortGraph(amt):
         sorted_amts.sort(key=lambda item:item['date'], reverse=False)
         return json.dumps(sorted_amts)
 
-    def month_averages():
-        month_info = json.loads(sort('month'))
-        averages = []
-        for i in month_info[0]['amounts']:
-            avg = statistics.mean([month_info[x]['amounts'][i] for x in range(len(month_info))])
-            averages.append({'name': i, 'average': avg})
-        return averages
+@app.route("/month_averages")
+def month_averages():
+    month_info = json.loads(sortGraph('month'))
+    averages = []
+    for i in month_info[0]['amounts']:
+        avg = statistics.mean([month_info[x]['amounts'][i] for x in range(len(month_info))])
+        averages.append({'name': i, 'average': avg})
+    return averages
 
 
 if __name__ == "__main__":

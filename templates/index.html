@@ -83,6 +83,14 @@
                               <canvas id="weeklyBudgetCanvas" width="200" height="200" style="background-color: white;"></canvas>
                             </div>
                         </div>
+
+                        <div class="card blue-grey darken-1 fade_card">
+                            <div class="card-content white-text">
+                              <span class="card-title">Where your Money Goes</span>
+                              <input type="text" id="example_id" name="example_name" value="" />
+                              <canvas id="spendingMapCanvas" width="200" height="200" style="background-color:white"></canvas>
+                            </div>
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -193,45 +201,45 @@
                     {
                         data: graphdata["total"], 
                         label: 'total', 
-                        backgroundColor: 'rgba(39, 174, 96, .3)',
+                        backgroundColor: 'rgba(39, 174, 96, 0)',
                         borderColor: 'rgba(39, 174, 96, .6)',},
                     {
                         data: graphdata["groceries"], 
                         label: 'groceries', 
-                        backgroundColor: 'rgba(22, 160, 133, .3)',
+                        backgroundColor: 'rgba(22, 160, 133, 0)',
                         borderColor: 'rgba(22, 160, 133, .6)'
                     },
                     {
                         data: graphdata["food"], 
                         label: 'food',
-                        backgroundColor: 'rgba(41, 128, 185, .3)',
+                        backgroundColor: 'rgba(41, 128, 185, 0)',
                         borderColor: 'rgba(41, 128, 185, .6)'
                     },
                     {
                         data: graphdata["entertainment"], 
                         label: 'entertainment',
-                        backgroundColor: 'rgba(142, 68, 173, .3)',
+                        backgroundColor: 'rgba(142, 68, 173, 0)',
                         borderColor: 'rgba(142, 68, 173, .6)',
                     },
                     {
                         data: graphdata["gas"], 
                         label: 'gas',
-                        backgroundColor: 'rgba(52, 73, 94, .3)',
+                        backgroundColor: 'rgba(52, 73, 94, 0)',
                         borderColor: 'rgba(52, 73, 94, .6)',
                     },
                     {
                         data: graphdata["coffee"], 
                         label: 'coffee',
-                        backgroundColor: 'rgba(58, 83, 155, .3)',
+                        backgroundColor: 'rgba(58, 83, 155, 0)',
                         borderColor: 'rgba(58, 83, 155, .6)',
                     },
                     {
                         data: graphdata["music"], 
                         label: 'music',
-                        backgroundColor: 'rgba(78,205,196, .3)',
+                        backgroundColor: 'rgba(78,205,196, 0)',
                         borderColor: 'rgba(78,205,196, .6)',
                     },
-                    {data: graphdata["shopping"], label: 'shopping'},
+                    {data: graphdata["shopping"], label: 'shopping', backgroundColor: 'rgba(0,0,0,0)', borderColor: 'rgba(0, 0, 0, 0.6)'},
                 
             ],
         };
@@ -242,6 +250,7 @@
         type: 'line',
         data: data,
         options: {
+            fill:false,
             scales: {
                 xAxes: [{
                             gridLines: {
@@ -285,7 +294,7 @@
       options: {
       rotation: 0 * Math.PI, // start angle in radians
       circumference: 2 * Math.PI, // sweep angle in radians
-      cutoutPercentage: 80
+      cutoutPercentage: 90
       }
     });
 		      

@@ -70,10 +70,10 @@ def main():
 
 	firstDate = datetime.date(*(int(s) for s in x_budget[0]['purchase_date'].split("-")))
 	lastDate = datetime.date(*(int(s) for s in x_budget[len(x_budget) - 1]['purchase_date'].split("-")))
-	print(firstDate)
-	print(lastDate)
+
 	timeSpan = (lastDate - firstDate).days
-	print(timeSpan)
+
+	timeSpan = (lastDate - firstDate).days
 	weeklySpending = [0] * int(math.floor(timeSpan/7))
 
 	for purchase in x_budget:

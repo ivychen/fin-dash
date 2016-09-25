@@ -170,14 +170,11 @@ def main():
             merchants = month_merchant_counts,
             all_merchants = json.dumps(weeklySpendingByMerchant),
             weeklyBudgetLimit = weeklySpendingAvg,
-<<<<<<< HEAD
             nearest_branch_output = nearest_branch_output,
-=======
             all_averages = avgs,
             month_average = [x for x in avgs if x['name'] == 'total'][0]['average'],
             curr_balance = acc_info['balance'],
             month_values = month_values
->>>>>>> 18279c149118b90dcfe70cef6e21e1c690d1313e
             ) 
 
 #################

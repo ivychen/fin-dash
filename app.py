@@ -131,11 +131,11 @@ def main():
     acc_type = acc_info['type']
     acc_balance = acc_info['balance']
     if acc_balance < 0:
-        acc_balance = '<span class="new badge red">' + '{:05.2f}'.format(acc_balance) + '</span>'
+        acc_balance = '<span class="new badge red">' + '$ {:05.2f}'.format(acc_balance) + '</span>'
     else:
-        acc_balance = '<span class="new badge">' + '{:05.2f}'.format(acc_balance) + '</span>'
+        acc_balance = '<span class="new badge">' + '$ {:05.2f}'.format(acc_balance) + '</span>'
     acc_balance = Markup(acc_balance)
-    acc_rewards = Markup('<span class="new badge blue">' + '{0:.2f}'.format(acc_info['rewards']) + '</span>')
+    acc_rewards = Markup('<span class="new badge blue">' + '$ {0:.2f}'.format(acc_info['rewards']) + '</span>')
 
     avgs = month_averages()
     print(avgs)
@@ -151,6 +151,7 @@ def main():
             acc_rewards=acc_rewards,
             merchants = month_merchant_counts,
             all_merchants = json.dumps(weeklySpendingByMerchant),
+            weeklyBudgetLimit = weeklySpendingAvg,
             ) 
 
 @app.route("/showSignup")

@@ -47,6 +47,31 @@ span.badge.new:after {
 	content: '';
 }
 
+/* Weekly Budget */
+.weekly-budget {
+	position: relative;
+}
+
+.weekly-budget .input-field input:focus {
+	border-bottom-color: #fff;
+	box-shadow: 0 1px 0 0 #fff;
+}
+
+input[type=text]:focus:not([readonly])+label {
+	color: #fff;
+}
+
+#innerBudgetLimit {
+	color: #455a64;
+	font-size: 2rem;
+	font-weight: bold;
+	top: 59%;
+	position: absolute;
+	text-align: center;
+	width: 85%;
+	z-index: 1;
+}
+
 /* Footer */
 .footer {
 	background: #454343;

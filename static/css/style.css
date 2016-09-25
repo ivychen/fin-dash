@@ -65,10 +65,10 @@ input[type=text]:focus:not([readonly])+label {
 	color: #455a64;
 	font-size: 2rem;
 	font-weight: bold;
-	top: 59%;
+	top: 50%;
 	position: absolute;
 	text-align: center;
-	width: 85%;
+	width: 90%;
 	z-index: 1;
 }
 

@@ -129,3 +129,7 @@ span.badge.new:after {
 	margin-left: -15rem;
 	margin-top: 15rem;
 }
+
+#mapid {
+	height: 400px;
+}

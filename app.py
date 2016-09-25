@@ -12,7 +12,7 @@ def main():
     API_KEY = "ca41b2d25861cebdfabb45477c97bcab"
     customer = "57e693dbdbd83557146123d8"
     account = "57e69755dbd83557146123dd"
-            
+
     url = "http://api.reimaginebanking.com/accounts/{}/purchases?key={}".format(account, API_KEY)
     response = requests.get(url, headers={'content-type':'application/json'})
     x = response.json()
@@ -92,12 +92,12 @@ def main():
             week = int(math.floor(((purchaseDate - firstDate).days)/7))
             merchant_id = purchase['merchant_id']
             geolocation = merchant_info[merchant_id]['geolocation']
+            name = merchant_info[merchant_id]['name']
             if (week != len(weeklySpending)):
-                    if merchant_id not in weeklySpendingByMerchant[week]:
-                            weeklySpendingByMerchant[week][geolocation] = purchase['amount']
+                    if name not in weeklySpendingByMerchant[week]:
+                            weeklySpendingByMerchant[week][name] = {"amount": purchase['amount'], "geocode": geolocation}
                     else:
-                            weeklySpendingByMerchant[week][geolocation] = weeklySpendingByMerchant[week][geolocation] + purchase['amount']
-
+                            weeklySpendingByMerchant[week][name]["amount"] += purchase["amount"]  
 
     weeklySpendingAvg = statistics.mean(weeklySpending)
 
@@ -147,6 +147,7 @@ def main():
             acc_balance=acc_balance,
             acc_rewards=acc_rewards,
             merchants = month_merchant_counts,
+            all_merchants = json.dumps(weeklySpendingByMerchant),
             ) 
 
 @app.route("/showSignup")
@@ -158,21 +159,21 @@ def showSignin():
             return render_template('signin.html')
 
 def getMerchantInfo():
-        merchants = ['57e69aaedbd83557146123df', '57e6a242dbd83557146123f9', '57e6a242dbd83557146123fa', '57e6a242dbd83557146123fb', '57e6a243dbd83557146123fc', '57e6a243dbd83557146123fd', '57e6a243dbd83557146123fe', '57e6a243dbd83557146123ff', '57e6a243dbd8355714612400', '57e6a243dbd8355714612401', '57e6a243dbd8355714612402', '57e6a243dbd8355714612403', '57e6a243dbd8355714612404']
-        API_KEY = "ca41b2d25861cebdfabb45477c97bcab"
-        merchant_info = {}
-        for merchant in merchants:
-            url = "http://api.reimaginebanking.com/merchants/{}?key={}".format(merchant, API_KEY)
-            response = requests.get(url, headers={'content-type':'application/json'})
-            merchant_dict = response.json()
-            merchant_id = str(merchant_dict[u'_id'])
-            merchant_categories = [str(x) for x in merchant_dict[u'category']]
-            name = str(merchant_dict[u'name'])
-            geolocation = str(merchant_dict[u'geocode'])
+    merchants = ['57e69aaedbd83557146123df', '57e6a242dbd83557146123f9', '57e6a242dbd83557146123fa', '57e6a242dbd83557146123fb', '57e6a243dbd83557146123fc', '57e6a243dbd83557146123fd', '57e6a243dbd83557146123fe', '57e6a243dbd83557146123ff', '57e6a243dbd8355714612400', '57e6a243dbd8355714612401', '57e6a243dbd8355714612402', '57e6a243dbd8355714612403', '57e6a243dbd8355714612404']
+    API_KEY = "ca41b2d25861cebdfabb45477c97bcab"
+    merchant_info = {}
+    for merchant in merchants:
+        url = "http://api.reimaginebanking.com/merchants/{}?key={}".format(merchant, API_KEY)
+        response = requests.get(url, headers={'content-type':'application/json'})
+        merchant_dict = response.json()
+        merchant_id = str(merchant_dict[u'_id'])
+        merchant_categories = [str(x) for x in merchant_dict[u'category']]
+        name = str(merchant_dict[u'name'])
+        geolocation = [merchant_dict['geocode']['lat'], merchant_dict['geocode']['lng']]
 
-            merchant_info[merchant_id] = {"name": name, "categories": merchant_categories, "geolocation": geolocation}
+        merchant_info[merchant_id] = {"name": name, "categories": merchant_categories, "geolocation": geolocation}
 
-        return merchant_info
+    return merchant_info
 
 @app.route("/sort/<amt>")
 def sortGraph(amt):

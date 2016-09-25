@@ -3,6 +3,7 @@ import json
 import datetime, calendar, math, statistics
 from flask import Flask, render_template, request, redirect, url_for, Markup
 from itertools import groupby
+from collections import OrderedDict
 
 app = Flask(__name__)
 
@@ -19,6 +20,7 @@ def main():
 	to_show = x[:50]
 	merch_info = getMerchantInfo()
 
+	month_merchant_counts = []
 	date_data = {}
 	for y in to_show:
 		if y[u'purchase_date'] in date_data:
@@ -36,6 +38,14 @@ def main():
 			add_to = date_data[y[u'purchase_date']]
 			add_to[c] += y[u'amount']
 
+		if int(y[u'purchase_date'].split('-')[1])  == datetime.datetime.now().month:
+			try: 
+				index = next(index for (index, d) in enumerate(month_merchant_counts) if d["name"] == merch_info[merch]["name"])
+				month_merchant_counts[index]["count"] += 1
+				month_merchant_counts[index]["total"] += y[u'amount']
+			except:
+				month_merchant_counts.append({"name": merch_info[merch]["name"], "count": 1, "total": y[u'amount']})
+
 	d = datetime.datetime.strptime(to_show[49][u'purchase_date'], "%Y-%m-%d")
 	delta = datetime.timedelta(days=1)
 	while d <= datetime.datetime.strptime(to_show[0][u'purchase_date'], "%Y-%m-%d"):
@@ -49,6 +59,9 @@ def main():
 		sorted_amts.append({'date': x, 'amounts': date_data[x]})
 	#print sorted_amts
 	sorted_amts.sort(key=lambda item:item['date'], reverse=False)
+
+	month_merchant_counts.sort(key=lambda item:item['total'], reverse=True)
+	month_merchant_counts = month_merchant_counts[:5]
 
 	# weekly budgeting data
 
@@ -115,7 +128,8 @@ def main():
 	        acc_owner=acc_owner,
 	        acc_type=acc_type,
 	        acc_balance=acc_balance,
-	        acc_rewards=acc_rewards
+	        acc_rewards=acc_rewards,
+	        merchants = month_merchant_counts,
 	        ) 
 
 @app.route("/showSignup")

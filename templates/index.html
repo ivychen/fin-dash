@@ -22,8 +22,9 @@
                 <div class="col s12 m12 l12">
                     <div class="card blue-grey darken-1 fade_card">
                         <div class="card-content white-text">
-                          <span class="card-title">Where your Money Goes</span>
+                          <span class="card-title">Spending Map</span>
                           <input type="text" id="example_id" name="example_name" value="" />
+                          <br>
                           <div id="mapid"></div>
                         </div>
                     </div>
@@ -91,7 +92,7 @@
                                   <label for="weeklyBudgetLimit">Spending Limit</label>
                               </div>
                               <canvas id="weeklyBudgetCanvas" width="200" height="200" style="background-color: white;"></canvas>
-                              <span id="innerBudgetLimit">$ {{ weeklyBudgetLimit }}</span>
+                              <span id="innerBudgetLimit">Weekly<br>Spending<br>${{ weeklyBudgetLimit }}</span>
                             </div>
                         </div>
                         <div class="card blue-grey darken-1 fade_card" style="color: #455a64 !important">
@@ -253,44 +254,44 @@
                         data: graphdata["total"], 
                         label: 'total', 
                         backgroundColor: 'rgba(39, 174, 96, 0)',
-                        borderColor: 'rgba(39, 174, 96, .6)',},
+                        borderColor: 'rgba(0, 0, 255, .6)',},
                     {
                         data: graphdata["groceries"], 
                         label: 'groceries', 
                         backgroundColor: 'rgba(22, 160, 133, 0)',
-                        borderColor: 'rgba(22, 160, 133, .6)'
+                        borderColor: 'rgba(255, 128, 0, .6)'
                     },
                     {
                         data: graphdata["food"], 
                         label: 'food',
                         backgroundColor: 'rgba(41, 128, 185, 0)',
-                        borderColor: 'rgba(41, 128, 185, .6)'
+                        borderColor: 'rgba(255, 255, 0, .6)'
                     },
                     {
                         data: graphdata["entertainment"], 
                         label: 'entertainment',
                         backgroundColor: 'rgba(142, 68, 173, 0)',
-                        borderColor: 'rgba(142, 68, 173, .6)',
+                        borderColor: 'rgba(0, 255, 0, .6)',
                     },
                     {
                         data: graphdata["gas"], 
                         label: 'gas',
                         backgroundColor: 'rgba(52, 73, 94, 0)',
-                        borderColor: 'rgba(52, 73, 94, .6)',
+                        borderColor: 'rgba(127, 0, 255, .6)',
                     },
                     {
                         data: graphdata["coffee"], 
                         label: 'coffee',
                         backgroundColor: 'rgba(58, 83, 155, 0)',
-                        borderColor: 'rgba(58, 83, 155, .6)',
+                        borderColor: 'rgba(255, 0, 255, .6)',
                     },
                     {
                         data: graphdata["music"], 
                         label: 'music',
-                        backgroundColor: 'rgba(78,205,196, 0)',
-                        borderColor: 'rgba(78,205,196, .6)',
+                        backgroundColor: 'rgba(0,255,255, 0)',
+                        borderColor: 'rgba(0, 255, 255, .6)',
                     },
-                    {data: graphdata["shopping"], label: 'shopping', backgroundColor: 'rgba(0,0,0,0)', borderColor: 'rgba(0, 0, 0, 0.6)'},
+                    {data: graphdata["shopping"], label: 'shopping', backgroundColor: 'rgba(0,255,255,0)', borderColor: 'rgba(0, 0, 0, 0.6)'},
                 
             ],
         };

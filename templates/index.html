@@ -19,6 +19,17 @@
     
         <div id="fin-dashboard">
             <div class="row">
+                <div class="col s12 m12 l12">
+                    <div class="card blue-grey darken-1 fade_card">
+                        <div class="card-content white-text">
+                          <span class="card-title">Where your Money Goes</span>
+                          <input type="text" id="example_id" name="example_name" value="" />
+                          <div id="mapid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <!-- Account Summary and Graphs -->
                 <div class="col s12 m12 l9">
                   <div class="row">
@@ -83,14 +94,6 @@
                               <canvas id="weeklyBudgetCanvas" width="200" height="200" style="background-color: white;"></canvas>
                             </div>
                         </div>
-
-                        <div class="card blue-grey darken-1 fade_card">
-                            <div class="card-content white-text">
-                              <span class="card-title">Where your Money Goes</span>
-                              <input type="text" id="example_id" name="example_name" value="" />
-                              <canvas id="spendingMapCanvas" width="200" height="200" style="background-color:white"></canvas>
-                            </div>
-                        </div>
                     </div>
                   </div>
                 </div>
@@ -141,8 +144,72 @@
     </div>
 </body>
 <script>
+    
+    var merchant_data = {{ all_merchants | safe }}
+
+    var mymap = L.map('mapid').setView([33.776001, -84.397766], 13);
+
+    L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        subdomains: ['a','b','c']
+    }).addTo( mymap );
+
+    function addMapMarkers(start, end) { 
+        var step = 604800;
+        var start_time = 1420070400;
+
+        start_index = Math.floor((start - start_time) / step);
+        end_index = Math.floor((end - start_time) / step);
+
+        console.log(start_index);
+        console.log(end_index);
+
+        totals = {}
+        for (var i =start_index; i < end_index; i++) {
+            for (prop in merchant_data[i]) {
+                var curr = merchant_data[i][prop]
+                if (!(prop in totals)) {
+                    totals[prop] = {'geocode': curr['geocode'], 'amount': curr['amount'] }
+                } else {
+                    totals[prop]['amount'] += curr['amount']
+                }
+            }
+        }
+
+        var markers = []
+        for (prop in totals) {
+            var circle = L.circle(totals[prop]['geocode'], totals[prop]['amount'], {
+                color: '#1e88e5 ',
+                fillColor: '#1e88e5 ',
+                fillOpacity: 0.5
+            }).addTo(mymap);
+
+
+            circle.bindPopup(prop + ': $' + Math.round(totals[prop]['amount'] * 100) / 100);
+                circle.on('mouseover', function (e) {
+                    this.openPopup();
+                });
+                circle.on('mouseout', function (e) {
+                    this.closePopup();
+                });
+            markers.push(circle);
+            }
+            return markers
+        }
+
       $(document).ready(function() {
         $('select').material_select();
+
+        markers = addMapMarkers(1420070400, 1474763510);
+        $('#example_id').change(function() {
+            for (var i = 0; i < markers.length; i++) {
+                mymap.removeLayer(markers[i]);
+            }
+            indices = $(this).val().split(';');
+            start = indices[0];
+            end = indices[1];
+            markers = addMapMarkers(start, end);
+        })
 
         $('#aggregate-select').change(function() {
             var month_abbrev = {'01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'May', '06': 'June', '07': 'July', '08': 'Aug', '09': 'Sept', '10': 'Oct', '11': 'Nov', '12': 'Dec'};

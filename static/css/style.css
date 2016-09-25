@@ -39,6 +39,10 @@ body {
 }
 
 /* COLLECTIONS + BADGES */
+.call {
+	width: 100%;
+}
+
 .collection.with-header .collection-item {
 	padding-left: 1rem;
 }

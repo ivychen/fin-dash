@@ -1,5 +1,6 @@
 import requests
 import json
+import re
 import datetime, calendar, math, statistics
 from flask import Flask, render_template, request, redirect, url_for, Markup
 from itertools import groupby
@@ -115,14 +116,31 @@ def main():
     currentWeekSpending = float("{0:.2f}".format(currentWeekSpending))
     weeklySpendingAvg = float("{0:.2f}".format(weeklySpendingAvg))
 
-    # MORE DAMN DATA
+    #################
     # CUSTOMER INFO
+    #################
     cust_url = "http://api.reimaginebanking.com/customers/{}?key={}".format(customer, API_KEY)
     cust_query = requests.get(cust_url, headers={'content-type':'application/json'})
     cust_info = cust_query.json()
     cust_firstname = cust_info['first_name']
+    cust_zip = cust_info['address']['zip']
 
+    # Capital One Bank Branch
+    branch_url = "http://api.reimaginebanking.com/branches?key={}".format(API_KEY)
+    branch_response = requests.get(branch_url, headers={'content-type':'application/json'})
+    branches = branch_response.json()
+    miles = 20
+    nearest_branch,existsNearest = getNearestBranch(22207, branches, miles)
+
+    if existsNearest == False:
+        nearest_branch_output = Markup("<p><strong>Sorry, there is no Capital One branch within {} miles of your postal address: {}.</strong></p>".format(miles, cust_zip))
+    else:
+        nearest_branch_phone = re.sub("[^0-9]","", nearest_branch['phone_number'])
+        address = nearest_branch['address']
+        nearest_branch_output = Markup("<p><strong>{}<br />Address:<br />{} {}<br />{}, {} {}</strong></p><br /><a class=\"waves-effect waves-light btn-large call\" href=\"tel:+1".format(nearest_branch['name'], address['street_number'], address['street_name'], address['city'], address['state'], address['zip']) + nearest_branch_phone + "\"><i class=\"material-icons left\">phone</i>Call Capital One</a>")
+    #################
     # ACCOUNT INFO
+    #################
     acc_url = "http://api.reimaginebanking.com/accounts/{}?key={}".format(account, API_KEY)
     acc_query = requests.get(acc_url, headers={'content-type':'application/json'})
     acc_info = acc_query.json()
@@ -149,8 +167,12 @@ def main():
             merchants = month_merchant_counts,
             all_merchants = json.dumps(weeklySpendingByMerchant),
             weeklyBudgetLimit = weeklySpendingAvg,
+            nearest_branch_output = nearest_branch_output,
             ) 
 
+#################
+# OTHER FUNCTIONS
+#################
 @app.route("/showSignup")
 def showSignup():
             return render_template('signup.html')
@@ -158,6 +180,33 @@ def showSignup():
 @app.route("/showSignin")
 def showSignin():
             return render_template('signin.html')
+
+def getNearestBranch(zip, branches, radius=20):
+    # zip codes from zip code API, default within 20 mile radius of customer radius
+    public_zip_url = "https://www.zipcodeapi.com/rest/avroGbvDfTRudD2Y9saOlEucZx5ZlJawfCUVNqz3jqxx4zwd2G1olvAk3FkppuVF/radius.json/{}/{}/mile".format(zip, radius)
+    public_zip_response = requests.get(public_zip_url, headers={'content-type': 'application/json'})
+    public_zips = public_zip_response.json()['zip_codes']
+    # public_zip.sort(key=lambda item:item['purchase_date'], reverse=True)
+    # zip_codes = []
+    public_zips.sort(key=lambda e: e['distance'])
+
+    nearest_branch = None
+    existsNearest = False
+
+    for city in public_zips:
+        for branch in branches:
+            if existsNearest:
+                break
+
+            if int(branch['address']['zip']) == int(city['zip_code']):
+                nearest_branch = branch
+                existsNearest = True
+                break
+
+        if existsNearest:
+            break
+
+    return branch,existsNearest
 
 def getMerchantInfo():
     merchants = ['57e69aaedbd83557146123df', '57e6a242dbd83557146123f9', '57e6a242dbd83557146123fa', '57e6a242dbd83557146123fb', '57e6a243dbd83557146123fc', '57e6a243dbd83557146123fd', '57e6a243dbd83557146123fe', '57e6a243dbd83557146123ff', '57e6a243dbd8355714612400', '57e6a243dbd8355714612401', '57e6a243dbd8355714612402', '57e6a243dbd8355714612403', '57e6a243dbd8355714612404']

@@ -12,7 +12,7 @@ def main():
     API_KEY = "ca41b2d25861cebdfabb45477c97bcab"
     customer = "57e693dbdbd83557146123d8"
     account = "57e69755dbd83557146123dd"
-        
+
     url = "http://api.reimaginebanking.com/accounts/{}/purchases?key={}".format(account, API_KEY)
     response = requests.get(url, headers={'content-type':'application/json'})
     x = response.json()
@@ -86,6 +86,7 @@ def main():
 
     merchant_info = getMerchantInfo()
 
+    #weekly spending by merchant
     for purchase in x_budget:
             purchaseDate = datetime.date(*(int(s) for s in purchase['purchase_date'].split("-")))
             week = int(math.floor(((purchaseDate - firstDate).days)/7))
@@ -135,7 +136,7 @@ def main():
         acc_balance = '<span class="new badge">' + '{:05.2f}'.format(acc_balance) + '</span>'
     acc_balance = Markup(acc_balance)
     acc_rewards = Markup('<span class="new badge blue">' + '{0:.2f}'.format(acc_info['rewards']) + '</span>')
-    print(weeklySpendingByMerchant[0])
+
     return render_template(
             'index.html',
             transactionData = json.dumps(sorted_amts),

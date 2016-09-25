@@ -79,7 +79,7 @@
                 
                         <div class="card blue-grey darken-1 fade_card">
                             <div class="card-content white-text">
-                              <span class="card-title">Budgeting</span>
+                              <span class="card-title">Weekly Budget</span>
                               <canvas id="weeklyBudgetCanvas" width="200" height="200" style="background-color: white;"></canvas>
                             </div>
                         </div>
@@ -271,8 +271,8 @@
     console.log(weeklyBudgetData);
     var weeklyBudgetData = {
       labels: [
-      "Spent ",
-      "Left"
+      "Amount Spent",
+      "Amount Left to Spend"
       ], 
       datasets: [
       {
@@ -294,10 +294,13 @@
       options: {
       rotation: 0 * Math.PI, // start angle in radians
       circumference: 2 * Math.PI, // sweep angle in radians
-      cutoutPercentage: 90
+      cutoutPercentage: 80
       }
     });
-		      
+    var weeklyBudgetctx = weeklyBudgetCanvas.getContext("2d");
+    console.log(weeklyBudgetctx);
+    weeklyBudgetctx.font="36px Roboto";
+    weeklyBudgetctx.fillText("500", 300, 200);		      
 
 </script>
  

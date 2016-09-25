@@ -296,11 +296,12 @@
       });
 
     var data = {{month_values | safe}};
+    var month_abbrev = {'01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr', '05': 'May', '06': 'June', '07': 'July', '08': 'Aug', '09': 'Sept', '10': 'Oct', '11': 'Nov', '12': 'Dec'};
     //console.log(data);
     labels = [];
     graphdata = {"total" : [], "food": [], "groceries": [], "entertainment": [], "gas": [], "coffee": [], "music": [], "shopping": []};
     for (var i=0; i < data.length; i ++) {
-        labels.push(data[i].date);
+        labels.push(month_abbrev[data[i].date]);
         amounts = data[i]["amounts"]
         for (prop in amounts) {
             graphdata[prop].push(Math.round(amounts[prop] * 100) / 100);

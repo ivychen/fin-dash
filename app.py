@@ -138,6 +138,7 @@ def main():
     acc_rewards = Markup('<span class="new badge blue">' + '$ {0:.2f}'.format(acc_info['rewards']) + '</span>')
 
     avgs = month_averages()
+    month_values = json.loads(sortGraph('month'))
 
     return render_template(
             'index.html',
@@ -153,7 +154,8 @@ def main():
             weeklyBudgetLimit = weeklySpendingAvg,
             all_averages = avgs,
             month_average = [x for x in avgs if x['name'] == 'total'][0]['average'],
-            curr_balance = acc_info['balance']
+            curr_balance = acc_info['balance'],
+            month_values = month_values
             ) 
 
 @app.route("/showSignup")

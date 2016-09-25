@@ -64,9 +64,9 @@
                               <form>
                                 <div class="input-field col s12">
                                     <select id="aggregate-select">
-                                      <option value="day" selected>Day</option>
+                                      <option value="day">Day</option>
                                       <option value="week">Week</option>
-                                      <option value="month">Month</option>
+                                      <option value="month" selected>Month</option>
                                     </select>
                                     <label style="color: white">Aggregate by:</label>
                                   </div>
@@ -295,7 +295,7 @@
         });
       });
 
-    var data = {{transactionData | safe}};
+    var data = {{month_values | safe}};
     //console.log(data);
     labels = [];
     graphdata = {"total" : [], "food": [], "groceries": [], "entertainment": [], "gas": [], "coffee": [], "music": [], "shopping": []};

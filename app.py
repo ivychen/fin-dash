@@ -1,6 +1,6 @@
 import requests
 import json
-import re
+import re, os
 import datetime, calendar, math, statistics
 from flask import Flask, render_template, request, redirect, url_for, Markup
 from itertools import groupby
@@ -130,7 +130,7 @@ def main():
     branch_response = requests.get(branch_url, headers={'content-type':'application/json'})
     branches = branch_response.json()
     miles = 20
-    nearest_branch,existsNearest = getNearestBranch(22207, branches, miles)
+    nearest_branch,existsNearest = getNearestBranch(cust_zip, branches, miles)
 
     if existsNearest == False:
         nearest_branch_output = Markup("<p><strong>Sorry, there is no Capital One branch within {} miles of your postal address: {}.</strong></p>".format(miles, cust_zip))
@@ -173,21 +173,16 @@ def main():
 #################
 # OTHER FUNCTIONS
 #################
-@app.route("/showSignup")
-def showSignup():
-            return render_template('signup.html')
-
-@app.route("/showSignin")
-def showSignin():
+@app.route("/signin")
+def signin():
             return render_template('signin.html')
 
 def getNearestBranch(zip, branches, radius=20):
     # zip codes from zip code API, default within 20 mile radius of customer radius
-    public_zip_url = "https://www.zipcodeapi.com/rest/avroGbvDfTRudD2Y9saOlEucZx5ZlJawfCUVNqz3jqxx4zwd2G1olvAk3FkppuVF/radius.json/{}/{}/mile".format(zip, radius)
+    ZIP_API = "XKGwZ4IfcbamAQ2PeGPKTUHEyBaBg7cdRSKRWt69Ehvf8y4meU78POMopX0G4cUW"
+    public_zip_url = "https://www.zipcodeapi.com/rest/{}/radius.json/{}/{}/mile".format(ZIP_API, zip, radius)
     public_zip_response = requests.get(public_zip_url, headers={'content-type': 'application/json'})
     public_zips = public_zip_response.json()['zip_codes']
-    # public_zip.sort(key=lambda item:item['purchase_date'], reverse=True)
-    # zip_codes = []
     public_zips.sort(key=lambda e: e['distance'])
 
     nearest_branch = None
@@ -336,6 +331,9 @@ def sortGraph(amt):
         sorted_amts.sort(key=lambda item:item['date'], reverse=False)
         return json.dumps(sorted_amts)
 
+@app.route("/logout")
+def logout():
+    return redirect("/signin", code=302)
 
 if __name__ == "__main__":
             app.run(debug=True)

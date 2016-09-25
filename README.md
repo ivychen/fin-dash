@@ -1,2 +1,2 @@
-# fin-dash
-hackGT 2016 financial dashboard
+## fin.dash
+#### A financial dashboard built using Capital One's Nessie API
